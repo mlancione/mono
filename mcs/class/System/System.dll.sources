@@ -629,7 +629,6 @@ Mono.Net.Security/MonoTlsStream.cs
 
 ReferenceSources/AssertWrapper.cs
 ReferenceSources/BinaryCompatibility.cs
-ReferenceSources/BootstrapHelper.cs
 ReferenceSources/ConfigurationManagerInternalFactory.cs
 ReferenceSources/Internal.cs
 ReferenceSources/HttpSysSettings.cs

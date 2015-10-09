@@ -364,7 +364,6 @@ Mono.Net.Security/MonoTlsProviderWrapper.cs
 Mono.Net.Security/MonoTlsStream.cs
 
 ReferenceSources/AssertWrapper.cs
-ReferenceSources/BootstrapHelper.cs
 ReferenceSources/Internal.cs
 ReferenceSources/HttpSysSettings.cs
 ReferenceSources/Logging.cs
