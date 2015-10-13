@@ -39,15 +39,23 @@ using Mono.Net.Security;
 
 namespace Mono.Security.Interface
 {
-	#if (!MONOTOUCH && !MONODROID) || INSIDE_SYSTEM
+	#if !MOBILE || INSIDE_SYSTEM
 	public class ValidationResult
 	{
 		bool trusted;
 		bool user_denied;
 		int error_code;
-		MonoSslPolicyErrors policy_errors;
+		MonoSslPolicyErrors? policy_errors;
 
-		public ValidationResult (bool trusted, bool user_denied, int error_code, MonoSslPolicyErrors policy_errors)
+		public ValidationResult (bool trusted, bool user_denied, int error_code, MonoSslPolicyErrors? policy_errors)
+		{
+			this.trusted = trusted;
+			this.user_denied = user_denied;
+			this.error_code = error_code;
+			this.policy_errors = policy_errors;
+		}
+
+		internal ValidationResult (bool trusted, bool user_defined, int error_code)
 		{
 			this.trusted = trusted;
 			this.user_denied = user_denied;
@@ -67,7 +75,7 @@ namespace Mono.Security.Interface
 			get { return error_code; }
 		}
 
-		public MonoSslPolicyErrors PolicyErrors {
+		public MonoSslPolicyErrors? PolicyErrors {
 			get { return policy_errors; }
 		}
 	}
