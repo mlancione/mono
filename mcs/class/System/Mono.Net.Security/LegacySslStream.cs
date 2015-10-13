@@ -47,14 +47,14 @@ using MonoHashAlgorithmType = MonoSecurity::Mono.Security.Protocol.Tls.HashAlgor
 using MonoExchangeAlgorithmType = MonoSecurity::Mono.Security.Protocol.Tls.ExchangeAlgorithmType;
 using MonoSecurityProtocolType = MonoSecurity::Mono.Security.Protocol.Tls.SecurityProtocolType;
 using MonoSecurity::Mono.Security.Protocol.Tls;
-using MonoSecurity::Mono.Security.Interface;
+using MSI = MonoSecurity::Mono.Security.Interface;
 #else
 using MonoCipherAlgorithmType = Mono.Security.Protocol.Tls.CipherAlgorithmType;
 using MonoHashAlgorithmType = Mono.Security.Protocol.Tls.HashAlgorithmType;
 using MonoExchangeAlgorithmType = Mono.Security.Protocol.Tls.ExchangeAlgorithmType;
 using MonoSecurityProtocolType = Mono.Security.Protocol.Tls.SecurityProtocolType;
 using Mono.Security.Protocol.Tls;
-using Mono.Security.Interface;
+using MSI = Mono.Security.Interface;
 #endif
 #if MONO_X509_ALIAS
 using X509CertificateCollection = PrebuiltSystem::System.Security.Cryptography.X509Certificates.X509CertificateCollection;
@@ -83,8 +83,8 @@ namespace Mono.Net.Security
 		#region Fields
 
 		SslStreamBase ssl_stream;
-		MonoTlsSettings settings;
-		ICertificateValidator certificateValidator;
+		MSI.MonoTlsSettings settings;
+		MSI.ICertificateValidator certificateValidator;
 
 		#endregion // Fields
 
@@ -100,7 +100,7 @@ namespace Mono.Net.Security
 		{
 		}
 
-		public LegacySslStream (Stream innerStream, bool leaveInnerStreamOpen, MonoTlsSettings settings)
+		public LegacySslStream (Stream innerStream, bool leaveInnerStreamOpen, MSI.MonoTlsSettings settings)
 			: base (innerStream, leaveInnerStreamOpen)
 		{
 			this.settings = settings;
@@ -318,6 +318,16 @@ namespace Mono.Net.Security
 		#endregion // Properties
 
 		#region Methods
+
+		static MSI.ValidationResult Convert (ValidationResult r)
+		{
+			return r != null ? new MSI.ValidationResult (r.Trusted, r.UserDenied, r.ErrorCode, null) : null;
+		}
+		static ValidationResult Convert (MSI.ValidationResult r)
+		{
+			return r != null ? new ValidationResult (r.Trusted, r.UserDenied, r.ErrorCode) : null;
+		}
+
 /*
 		AsymmetricAlgorithm GetPrivateKey (X509Certificate cert, string targetHost)
 		{
@@ -365,15 +375,11 @@ namespace Mono.Net.Security
 				return null;
 			};
 
-#if MARTIN_FIXME
 			// Even if validation_callback is null this allows us to verify requests where the user
 			// does not provide a verification callback but attempts to authenticate with the website
 			// as a client (see https://bugzilla.xamarin.com/show_bug.cgi?id=18962 for an example)
-			s.ServerCertValidation2 += (certs) => ((ChainValidationHelper)certificateValidator).ValidateChain (targetHost, certs);
+			s.ServerCertValidation2 += (certs) => Convert (((ChainValidationHelper)certificateValidator).ValidateChain (targetHost, certs));
 			s.ClientCertSelectionDelegate = OnCertificateSelection;
-#else
-			throw new NotImplementedException ();
-#endif
 
 			ssl_stream = s;
 
@@ -410,14 +416,10 @@ namespace Mono.Net.Security
 				return cert2 != null ? cert2.PrivateKey : null;
 			};
 
-#if MARTIN_FIXME
 			s.ClientCertValidationDelegate = delegate (X509Certificate cert, int[] certErrors) {
-				var errors = certErrors.Length > 0 ? MonoSslPolicyErrors.RemoteCertificateChainErrors : MonoSslPolicyErrors.None;
+				var errors = certErrors.Length > 0 ? MSI.MonoSslPolicyErrors.RemoteCertificateChainErrors : MSI.MonoSslPolicyErrors.None;
 				return ((ChainValidationHelper)certificateValidator).ValidateClientCertificate (cert, errors);
 			};
-#else
-			throw new NotImplementedException ();
-#endif
 
 			ssl_stream = s;
 
