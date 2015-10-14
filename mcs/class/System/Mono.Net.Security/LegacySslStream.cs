@@ -319,15 +319,6 @@ namespace Mono.Net.Security
 
 		#region Methods
 
-		static MSI.ValidationResult Convert (ValidationResult r)
-		{
-			return r != null ? new MSI.ValidationResult (r.Trusted, r.UserDenied, r.ErrorCode, null) : null;
-		}
-		static ValidationResult Convert (MSI.ValidationResult r)
-		{
-			return r != null ? new ValidationResult (r.Trusted, r.UserDenied, r.ErrorCode) : null;
-		}
-
 /*
 		AsymmetricAlgorithm GetPrivateKey (X509Certificate cert, string targetHost)
 		{
@@ -378,7 +369,7 @@ namespace Mono.Net.Security
 			// Even if validation_callback is null this allows us to verify requests where the user
 			// does not provide a verification callback but attempts to authenticate with the website
 			// as a client (see https://bugzilla.xamarin.com/show_bug.cgi?id=18962 for an example)
-			s.ServerCertValidation2 += (certs) => Convert (((ChainValidationHelper)certificateValidator).ValidateChain (targetHost, certs));
+			s.ServerCertValidation2 += (certs) => ((ChainValidationHelper)certificateValidator).ValidateChain (targetHost, certs);
 			s.ClientCertSelectionDelegate = OnCertificateSelection;
 
 			ssl_stream = s;
