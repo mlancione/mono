@@ -86,7 +86,11 @@ namespace System.Net
 
 		internal void SetCompleted (bool synch, int nbytes)
 		{
-			this.nbytes = nbytes;
+
+			if (this.nbytes >= 0 && nbytes >= 0)
+				this.nbytes += nbytes;
+			else
+				this.nbytes = nbytes;
 			SetCompleted_internal (synch);
 		}
 		
