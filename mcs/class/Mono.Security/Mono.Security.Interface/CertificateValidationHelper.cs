@@ -39,7 +39,7 @@ using Mono.Net.Security;
 
 namespace Mono.Security.Interface
 {
-	#if !MOBILE || INSIDE_SYSTEM
+	#if (!MONOTOUCH && !MONODROID) || INSIDE_SYSTEM
 	public class ValidationResult
 	{
 		bool trusted;
